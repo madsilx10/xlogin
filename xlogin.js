@@ -65,10 +65,22 @@ async function loginAccount(username, password) {
     }
   }, guest);
 
-  console.log(`[${username}] Init: ${JSON.stringify(data).slice(0,400)}`);
   let flowToken = data.flow_token;
   att = data.att || "";
   if (!flowToken) throw new Error(`No flow_token: ${JSON.stringify(data).slice(0,200)}`);
+
+  // JS Instrumentation (required step)
+  if (data.subtasks?.[0]?.subtask_id === "LoginJsInstrumentationSubtask") {
+    ({ data } = await apiPost("/1.1/onboarding/task.json", {
+      flow_token: flowToken,
+      subtask_inputs: [{
+        subtask_id: "LoginJsInstrumentationSubtask",
+        js_instrumentation: { response: "{}", link: "next_link" }
+      }]
+    }, guest, null, null, att));
+    flowToken = data.flow_token;
+    att = data.att || att;
+  }
 
   // Username
   ({ data } = await apiPost("/1.1/onboarding/task.json", {
