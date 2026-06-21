@@ -87,6 +87,7 @@ async function loginAccount(username, password) {
       enter_password: { password, link: "next_link" }
     }]
   }, guest));
+  console.log(`[${username}] Password response: ${JSON.stringify(data).slice(0,300)}`);
   flowToken = data.flow_token;
 
   // Cek subtask
