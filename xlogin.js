@@ -5,7 +5,7 @@ import { createInterface } from "readline";
 const rl = createInterface({ input: process.stdin, output: process.stdout });
 const prompt = (q) => new Promise(r => rl.question(q, a => r(a.trim())));
 
-const BEARER = "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I7wlMpo58Ao%3DPnb1Fu6yZe31TV3Gjm5Of67pHVtnKU4VpXMGSMZqJMm6A5hHGw";
+const BEARER = "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA";
 
 async function getGuestToken() {
   const r = await fetch("https://api.twitter.com/1.1/guest/activate.json", {
