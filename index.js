@@ -237,7 +237,19 @@ async function tweetComment(xtoken, tweetId, text) {
 
 // Tweet ID dari post EthraShip yang perlu di-komen
 const ETHRA_TWEET_ID = "2050222589084119221";
-const COMMENT_TEXT = "🚢 Excited about Ethra Ship! Maritime RWA investing is the future. #EthraShip #Maritime";
+const COMMENTS = [
+  "This is the future of maritime investing 🚢",
+  "Finally, real maritime assets on-chain",
+  "Maritime RWA is a game changer",
+  "Love what Ethra is building here",
+  "Solid project, maritime + blockchain makes sense",
+  "Been waiting for something like this",
+  "Real world assets done right 🔥",
+  "This is what crypto should be about",
+  "Interesting take on maritime logistics",
+  "Ethra is onto something big here",
+];
+const COMMENT_TEXT = COMMENTS[Math.floor(Math.random() * COMMENTS.length)];
 
 // ============ TASKS ============
 async function getTasks(token) {
