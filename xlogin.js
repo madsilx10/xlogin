@@ -65,6 +65,7 @@ async function loginAccount(username, password) {
     }
   }, guest);
 
+  console.log(`[${username}] Init: ${JSON.stringify(data).slice(0,400)}`);
   let flowToken = data.flow_token;
   att = data.att || "";
   if (!flowToken) throw new Error(`No flow_token: ${JSON.stringify(data).slice(0,200)}`);
