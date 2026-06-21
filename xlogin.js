@@ -20,7 +20,7 @@ async function getGuestToken() {
   return d.guest_token;
 }
 
-async function apiPost(path, body, guest, ct0, authToken) {
+async function apiPost(path, body, guest, ct0, authToken, att) {
   const cookie = ct0 ? `ct0=${ct0}; auth_token=${authToken}` : "";
   const r = await fetch(`https://api.twitter.com${path}`, {
     method: "POST",
@@ -31,6 +31,7 @@ async function apiPost(path, body, guest, ct0, authToken) {
       "x-twitter-active-user": "yes",
       "x-twitter-client-language": "en",
       "x-guest-token": guest || "",
+      ...(att ? { "x-att": att } : {}),
       ...(ct0 ? { "x-csrf-token": ct0, "cookie": cookie } : {}),
     },
     body: JSON.stringify(body),
@@ -50,6 +51,7 @@ async function loginAccount(username, password) {
   console.log(`[${username}] ✅ Guest token: ${guest}`);
 
   // Flow init
+  let att = "";
   let { data } = await apiPost("/1.1/onboarding/task.json?flow_name=login", {
     input_flow_data: {
       flow_context: { debug_overrides: {}, start_location: { location: "splash_screen" } }
@@ -64,6 +66,7 @@ async function loginAccount(username, password) {
   }, guest);
 
   let flowToken = data.flow_token;
+  att = data.att || "";
   if (!flowToken) throw new Error(`No flow_token: ${JSON.stringify(data).slice(0,200)}`);
 
   // Username
@@ -76,9 +79,9 @@ async function loginAccount(username, password) {
         link: "next_link"
       }
     }]
-  }, guest));
+  }, guest, null, null, att));
   flowToken = data.flow_token;
-  console.log(`[${username}] Username response: ${JSON.stringify(data).slice(0,300)}`);
+  att = data.att || att;
 
   // Password
   ({ data } = await apiPost("/1.1/onboarding/task.json", {
@@ -87,8 +90,7 @@ async function loginAccount(username, password) {
       subtask_id: "LoginEnterPassword",
       enter_password: { password, link: "next_link" }
     }]
-  }, guest));
-  console.log(`[${username}] Password response: ${JSON.stringify(data).slice(0,300)}`);
+  }, guest, null, null, att));
   flowToken = data.flow_token;
 
   // Cek subtask
