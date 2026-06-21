@@ -31,7 +31,7 @@ async function apiPost(path, body, guest, ct0, authToken, att) {
       "x-twitter-active-user": "yes",
       "x-twitter-client-language": "en",
       "x-guest-token": guest || "",
-      ...(att ? { "x-att": att } : {}),
+
       ...(ct0 ? { "x-csrf-token": ct0, "cookie": cookie } : {}),
     },
     body: JSON.stringify(body),
@@ -51,7 +51,6 @@ async function loginAccount(username, password) {
   console.log(`[${username}] ✅ Guest token: ${guest}`);
 
   // Flow init
-  let att = "";
   let { data } = await apiPost("/1.1/onboarding/task.json?flow_name=login", {
     input_flow_data: {
       flow_context: { debug_overrides: {}, start_location: { location: "splash_screen" } }
@@ -66,7 +65,6 @@ async function loginAccount(username, password) {
   }, guest);
 
   let flowToken = data.flow_token;
-  att = data.att || "";
   if (!flowToken) throw new Error(`No flow_token: ${JSON.stringify(data).slice(0,200)}`);
 
   // JS Instrumentation (required step)
@@ -77,9 +75,8 @@ async function loginAccount(username, password) {
         subtask_id: "LoginJsInstrumentationSubtask",
         js_instrumentation: { response: "{}", link: "next_link" }
       }]
-    }, guest, null, null, att));
+    }, guest));
     flowToken = data.flow_token;
-    att = data.att || att;
     console.log(`[${username}] JS Inst: ${JSON.stringify(data).slice(0,300)}`);
   }
 
@@ -93,9 +90,8 @@ async function loginAccount(username, password) {
         link: "next_link"
       }
     }]
-  }, guest, null, null, att));
+  }, guest));
   flowToken = data.flow_token;
-  att = data.att || att;
   console.log(`[${username}] Username step: ${JSON.stringify(data).slice(0,300)}`);
 
   // Password
@@ -105,7 +101,7 @@ async function loginAccount(username, password) {
       subtask_id: "LoginEnterPassword",
       enter_password: { password, link: "next_link" }
     }]
-  }, guest, null, null, att));
+  }, guest));
   flowToken = data.flow_token;
 
   // Cek subtask
