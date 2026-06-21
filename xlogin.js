@@ -78,6 +78,7 @@ async function loginAccount(username, password) {
     }]
   }, guest));
   flowToken = data.flow_token;
+  console.log(`[${username}] Username response: ${JSON.stringify(data).slice(0,300)}`);
 
   // Password
   ({ data } = await apiPost("/1.1/onboarding/task.json", {
